@@ -60,7 +60,7 @@ def test_db():
 
 @pytest.fixture
 def client(test_db):
-    with patch('app.main.get_db_name', return_value=TEST_DB):
+    with patch('app.db_repository.get_db_name', return_value=TEST_DB):
         yield TestClient(app)
 
 def test_create_and_get_insights(client, test_db):
