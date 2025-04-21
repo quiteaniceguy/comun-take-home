@@ -34,8 +34,8 @@ async def _get_insights(customer_id: str, top_n: int | None = None, days_ago: in
     if days_ago is not None:
         today = datetime.now().date()
         start_date = today - timedelta(days=days_ago)
-        date_filter = f"AND t.date >= '{start_date}' AND t.date <= '{today}'"
-
+        date_filter = f"AND t.date >= DATE('{start_date}') AND t.date <= DATE('{today}')"
+    
     # Query to get spending by category for card transactions only
     query = f"""
         SELECT 
@@ -52,6 +52,7 @@ async def _get_insights(customer_id: str, top_n: int | None = None, days_ago: in
     
     cur.execute(query, (f"customer-{customer_id}",))
     results = cur.fetchall()
+
     
     # Convert results to list of dictionaries
     categories = [
@@ -74,7 +75,6 @@ class TransactionCreate(BaseModel):
     merchant_id: str
     amount_cents: int = Field(gt=0, description="Amount in cents, must be positive")
     is_card: bool
-
 
 
 @app.post("/transactions")
